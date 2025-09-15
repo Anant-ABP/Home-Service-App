@@ -51,7 +51,9 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
             children: [
               // Header Card with avatar, name, rating
               Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12 * s)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12 * s),
+                ),
                 elevation: 2,
                 child: Padding(
                   padding: EdgeInsets.all(12 * s),
@@ -60,18 +62,34 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                       CircleAvatar(
                         radius: 32 * s,
                         backgroundColor: Colors.blueAccent,
-                        child: Text('S', style: TextStyle(fontSize: 28 * s, color: Colors.white)),
+                        child: Text(
+                          'S',
+                          style: TextStyle(
+                            fontSize: 28 * s,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                       SizedBox(width: 12 * s),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Service Provider',
-                                style: TextStyle(fontSize: 18 * s, fontWeight: FontWeight.w600)),
+                            Text(
+                              'Service Provider',
+                              style: TextStyle(
+                                fontSize: 18 * s,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                             SizedBox(height: 6 * s),
-                            Text('Plumbing • Electrical • Appliances',
-                                style: TextStyle(fontSize: 13 * s, color: Colors.grey[700])),
+                            Text(
+                              'Plumbing • Electrical • Appliances',
+                              style: TextStyle(
+                                fontSize: 13 * s,
+                                color: Colors.grey[700],
+                              ),
+                            ),
                             SizedBox(height: 8 * s),
                             Row(
                               children: [
@@ -81,23 +99,36 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                                 const Spacer(),
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(horizontal: 10 * s, vertical: 6 * s),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 10 * s,
+                                      vertical: 6 * s,
+                                    ),
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8 * s)),
+                                      borderRadius: BorderRadius.circular(
+                                        8 * s,
+                                      ),
+                                    ),
                                   ),
                                   onPressed: () {
                                     // Placeholder: view reviews page will be step 5
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Open reviews (not yet implemented)')),
+                                      const SnackBar(
+                                        content: Text(
+                                          'Open reviews (not yet implemented)',
+                                        ),
+                                      ),
                                     );
                                   },
-                                  child: Text('View Reviews', style: TextStyle(fontSize: 12 * s)),
-                                )
+                                  child: Text(
+                                    'View Reviews',
+                                    style: TextStyle(fontSize: 12 * s),
+                                  ),
+                                ),
                               ],
-                            )
+                            ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -107,14 +138,25 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
 
               // Business Info card
               Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12 * s)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12 * s),
+                ),
                 elevation: 1,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12 * s, vertical: 8 * s),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12 * s,
+                    vertical: 8 * s,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Business Information', style: TextStyle(fontSize: 15 * s, fontWeight: FontWeight.w600)),
+                      Text(
+                        'Business Information',
+                        style: TextStyle(
+                          fontSize: 15 * s,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       SizedBox(height: 6 * s),
                       ListTile(
                         contentPadding: EdgeInsets.zero,
@@ -146,14 +188,25 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
 
               // Preferences / Quick info
               Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12 * s)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12 * s),
+                ),
                 elevation: 1,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12 * s, vertical: 10 * s),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12 * s,
+                    vertical: 10 * s,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Profile Details', style: TextStyle(fontSize: 15 * s, fontWeight: FontWeight.w600)),
+                      Text(
+                        'Profile Details',
+                        style: TextStyle(
+                          fontSize: 15 * s,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       SizedBox(height: 8 * s),
                       Row(
                         children: [
@@ -165,11 +218,20 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Gender', style: TextStyle(fontSize: 12 * s, color: Colors.grey[700])),
+                                    Text(
+                                      'Gender',
+                                      style: TextStyle(
+                                        fontSize: 12 * s,
+                                        color: Colors.grey[700],
+                                      ),
+                                    ),
                                     SizedBox(height: 2 * s),
-                                    Text('Male', style: TextStyle(fontSize: 14 * s)),
+                                    Text(
+                                      'Male',
+                                      style: TextStyle(fontSize: 14 * s),
+                                    ),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -181,16 +243,25 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Languages', style: TextStyle(fontSize: 12 * s, color: Colors.grey[700])),
+                                    Text(
+                                      'Languages',
+                                      style: TextStyle(
+                                        fontSize: 12 * s,
+                                        color: Colors.grey[700],
+                                      ),
+                                    ),
                                     SizedBox(height: 2 * s),
-                                    Text('English, Hindi', style: TextStyle(fontSize: 14 * s)),
+                                    Text(
+                                      'English, Hindi',
+                                      style: TextStyle(fontSize: 14 * s),
+                                    ),
                                   ],
-                                )
+                                ),
                               ],
                             ),
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -200,7 +271,9 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
 
               // Actions list
               Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12 * s)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12 * s),
+                ),
                 elevation: 0,
                 child: Column(
                   children: [
@@ -210,7 +283,13 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () {
                         // Step for Services page will be provided later
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Open Services (not implemented yet)')));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Open Services (not implemented yet)',
+                            ),
+                          ),
+                        );
                       },
                     ),
                     Divider(height: 1 * s),
@@ -219,7 +298,13 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                       title: const Text('Availability'),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Open Availability (not implemented yet)')));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Open Availability (not implemented yet)',
+                            ),
+                          ),
+                        );
                       },
                     ),
                     Divider(height: 1 * s),
@@ -230,7 +315,11 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                       onTap: () {
                         // For now we push a temporary placeholder page to avoid navigation errors
                         Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => const PlaceholderPage(title: 'Edit Profile (placeholder)')),
+                          MaterialPageRoute(
+                            builder: (_) => const PlaceholderPage(
+                              title: 'Edit Profile (placeholder)',
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -244,13 +333,23 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                           context: context,
                           builder: (ctx) => AlertDialog(
                             title: const Text('Log out'),
-                            content: const Text('Are you sure you want to log out?'),
+                            content: const Text(
+                              'Are you sure you want to log out?',
+                            ),
                             actions: [
-                              TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-                              TextButton(onPressed: () {
-                                Navigator.pop(ctx);
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logged out')));
-                              }, child: const Text('Yes')),
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(ctx);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Logged out')),
+                                  );
+                                },
+                                child: const Text('Yes'),
+                              ),
                             ],
                           ),
                         );
@@ -271,20 +370,38 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10 * s),
-                        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 6 * s, offset: Offset(0, 2 * s))],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6 * s,
+                            offset: Offset(0, 2 * s),
+                          ),
+                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Profile Completion', style: TextStyle(fontSize: 13 * s, fontWeight: FontWeight.w600)),
+                          Text(
+                            'Profile Completion',
+                            style: TextStyle(
+                              fontSize: 13 * s,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                           SizedBox(height: 8 * s),
                           LinearProgressIndicator(value: 0.86),
                           SizedBox(height: 6 * s),
-                          Text('86% complete', style: TextStyle(fontSize: 12 * s, color: Colors.grey[700])),
+                          Text(
+                            '86% complete',
+                            style: TextStyle(
+                              fontSize: 12 * s,
+                              color: Colors.grey[700],
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
 
@@ -293,3 +410,6 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
           ),
         ),
       ),
+    );
+  }
+}

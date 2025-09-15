@@ -43,9 +43,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-# Ignore everything in linux
-linux/*
-windows/*
-macos/*
-web/*
-ios/*
