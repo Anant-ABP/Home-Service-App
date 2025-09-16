@@ -9,7 +9,7 @@ class WorkerProfilePage extends StatefulWidget {
 
 class _WorkerProfilePageState extends State<WorkerProfilePage> {
   // Example state: active bottom nav index
-  int _selectedIndex = 2;
+  //int _selectedIndex = 2;
 
   // Helper to scale UI from baseline (393 x 865)
   double _scale(BuildContext context) {
@@ -316,8 +316,8 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                         // For now we push a temporary placeholder page to avoid navigation errors
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => const PlaceholderPage(
-                              title: 'Edit Profile (placeholder)',
+                            builder: (_) => const Placeholder(
+                              // title: 'Edit Profile (placeholder)',
                             ),
                           ),
                         );
