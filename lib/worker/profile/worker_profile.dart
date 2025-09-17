@@ -8,10 +8,8 @@ class WorkerProfilePage extends StatefulWidget {
 }
 
 class _WorkerProfilePageState extends State<WorkerProfilePage> {
-  // Example state: active bottom nav index
-  //int _selectedIndex = 2;
+  int _selectedIndex = 2; // default Profile tab
 
-  // Helper to scale UI from baseline (393 x 865)
   double _scale(BuildContext context) {
     final baseWidth = 393.0;
     return MediaQuery.of(context).size.width / baseWidth;
@@ -49,7 +47,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Card with avatar, name, rating
+              // Header
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12 * s),
@@ -110,7 +108,6 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    // Placeholder: view reviews page will be step 5
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text(
@@ -136,7 +133,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
 
               SizedBox(height: 12 * s),
 
-              // Business Info card
+              // Business Info
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12 * s),
@@ -163,21 +160,24 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                         leading: const Icon(Icons.phone),
                         title: const Text('Phone Number'),
                         subtitle: const Text('+91 98765 43210'),
-                        onTap: () {},
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: const Icon(Icons.mail_outline),
                         title: const Text('Email'),
                         subtitle: const Text('service@example.com'),
-                        onTap: () {},
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: const Icon(Icons.location_on_outlined),
                         title: const Text('Location'),
                         subtitle: const Text('Mumbai, India'),
-                        onTap: () {},
+                      ),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.person_outline),
+                        title: const Text('Gender'),
+                        subtitle: const Text('Male'),
                       ),
                     ],
                   ),
@@ -186,103 +186,34 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
 
               SizedBox(height: 12 * s),
 
-              // Preferences / Quick info
+              // Additional Details
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12 * s),
                 ),
                 elevation: 1,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12 * s,
-                    vertical: 10 * s,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Profile Details',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12 * s,
+                        vertical: 10 * s,
+                      ),
+                      child: Text(
+                        'Additional Details',
                         style: TextStyle(
                           fontSize: 15 * s,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(height: 8 * s),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                const Icon(Icons.person_outline),
-                                SizedBox(width: 8 * s),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Gender',
-                                      style: TextStyle(
-                                        fontSize: 12 * s,
-                                        color: Colors.grey[700],
-                                      ),
-                                    ),
-                                    SizedBox(height: 2 * s),
-                                    Text(
-                                      'Male',
-                                      style: TextStyle(fontSize: 14 * s),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Row(
-                              children: [
-                                const Icon(Icons.language_outlined),
-                                SizedBox(width: 8 * s),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Languages',
-                                      style: TextStyle(
-                                        fontSize: 12 * s,
-                                        color: Colors.grey[700],
-                                      ),
-                                    ),
-                                    SizedBox(height: 2 * s),
-                                    Text(
-                                      'English, Hindi',
-                                      style: TextStyle(fontSize: 14 * s),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 14 * s),
-
-              // Actions list
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12 * s),
-                ),
-                elevation: 0,
-                child: Column(
-                  children: [
+                    ),
+                    const Divider(height: 1),
                     ListTile(
                       leading: const Icon(Icons.build),
                       title: const Text('Manage Services'),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () {
-                        // Step for Services page will be provided later
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
@@ -292,7 +223,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                         );
                       },
                     ),
-                    Divider(height: 1 * s),
+                    const Divider(height: 1),
                     ListTile(
                       leading: const Icon(Icons.event_available_outlined),
                       title: const Text('Availability'),
@@ -307,28 +238,26 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                         );
                       },
                     ),
-                    Divider(height: 1 * s),
+                    const Divider(height: 1),
                     ListTile(
                       leading: const Icon(Icons.edit),
                       title: const Text('Edit Profile'),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () {
-                        // For now we push a temporary placeholder page to avoid navigation errors
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => const Placeholder(
-                              // title: 'Edit Profile (placeholder)',
+                            builder: (_) => const PlaceholderPage(
+                              title: 'Edit Profile (placeholder)',
                             ),
                           ),
                         );
                       },
                     ),
-                    Divider(height: 1 * s),
+                    const Divider(height: 1),
                     ListTile(
                       leading: const Icon(Icons.logout_outlined),
                       title: const Text('Log Out'),
                       onTap: () {
-                        // handle logout
                         showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
@@ -360,56 +289,45 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
               ),
 
               SizedBox(height: 24 * s),
-
-              // Optional: small analytics / completion section similar to design
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(12 * s),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10 * s),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6 * s,
-                            offset: Offset(0, 2 * s),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Profile Completion',
-                            style: TextStyle(
-                              fontSize: 13 * s,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          SizedBox(height: 8 * s),
-                          LinearProgressIndicator(value: 0.86),
-                          SizedBox(height: 6 * s),
-                          Text(
-                            '86% complete',
-                            style: TextStyle(
-                              fontSize: 12 * s,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 24 * s),
             ],
           ),
         ),
       ),
+
+      // Bottom navigation bar (no Settings tab now)
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (i) => setState(() => _selectedIndex = i),
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history_outlined),
+            label: 'History',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+      ),
+    );
+  }
+}
+
+class PlaceholderPage extends StatelessWidget {
+  final String title;
+  const PlaceholderPage({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
+      body: Center(child: Text('This is a placeholder for $title')),
     );
   }
 }
