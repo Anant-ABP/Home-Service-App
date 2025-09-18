@@ -25,7 +25,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
         if (half) Icon(Icons.star_half, size: 14 * scale, color: Colors.amber),
         for (int i = 0; i < (5 - full - (half ? 1 : 0)); i++)
           Icon(Icons.star_border, size: 14 * scale, color: Colors.amber),
-      ],
+      ], //hii
     );
   }
 
