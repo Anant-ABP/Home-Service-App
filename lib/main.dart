@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:home_service_app/worker/profile/worker_profile.dart';
+import 'package:home_service_app/service_provider/profile_page/profile_page.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: WorkerProfilePage());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Worker Side",
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const WorkerProfilePage(),
+    );
   }
 }
