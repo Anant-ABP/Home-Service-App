@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:home_service_app/service_provider/profile_page/profile_page.dart';
+import 'package:home_service_app/service_provider/home_page/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Worker Side",
+      title: 'Home Service App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const WorkerProfilePage(),
+      home: const HomePage(),
     );
   }
 }
