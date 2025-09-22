@@ -1,23 +1,25 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:home_service_app/service_provider/History/history.dart';
+import 'package:home_service_app/service_provider/home_page/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:home_service_app/service_provider/profile_page/availability.dart';
-import 'package:home_service_app/service_provider/profile_page/edit_profile.dart';
-import 'package:home_service_app/service_provider/profile_page/manage_services.dart';
-import 'package:home_service_app/service_provider/profile_page/show_review.dart';
+import 'availability.dart';
+import 'edit_profile.dart';
+import 'manage_services.dart';
+import 'show_review.dart';
 
+/// ------------------- PROFILE PAGE -------------------
 class WorkerProfilePage extends StatefulWidget {
-  const WorkerProfilePage({super.key});
+  final int currentIndex;
+  const WorkerProfilePage({super.key, this.currentIndex = 2});
 
   @override
   State<WorkerProfilePage> createState() => _WorkerProfilePageState();
 }
 
 class _WorkerProfilePageState extends State<WorkerProfilePage> {
-  int _selectedIndex = 2; // Profile tab
   List<String> _providerServices = [];
   Map<String, Map<String, String>> _availabilitySummary = {};
-
   String? _name, _email, _phone, _location, _gender, _imagePath;
 
   @override
@@ -146,7 +148,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
+              // Header Card
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12 * s),
@@ -248,9 +250,10 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                   ),
                 ),
               ),
+
               SizedBox(height: 12 * s),
 
-              // Business Info
+              // Business Information Card
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12 * s),
@@ -284,9 +287,10 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                   ),
                 ),
               ),
+
               SizedBox(height: 12 * s),
 
-              // Additional Details
+              // Additional Details Card
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12 * s),
@@ -351,21 +355,18 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                             builder: (_) => const EditProfilePage(),
                           ),
                         );
-                        if (result == true) {
-                          _loadProfile(); // reload updated data
-                        }
+                        if (result == true) _loadProfile();
                       },
                     ),
-                    // Log Out
                     ListTile(
                       leading: const Icon(
                         Icons.logout_outlined,
-                        color: Colors.red, // 🔴 icon in red
+                        color: Colors.red,
                       ),
                       title: const Text(
                         'Log Out',
                         style: TextStyle(
-                          color: Colors.red, // 🔴 text in red
+                          color: Colors.red,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -399,27 +400,51 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                   ],
                 ),
               ),
+
               SizedBox(height: 24 * s),
             ],
           ),
         ),
       ),
+
+      // BottomNavigationBar
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (i) => setState(() => _selectedIndex = i),
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blue, // 🔵 selected icon/text color
-        unselectedItemColor: Colors.grey, // ⚪ unselected icon/text color
+        currentIndex: widget.currentIndex,
+        onTap: (index) {
+          if (index == widget.currentIndex) return;
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const HomePage(currentIndex: 0),
+                ),
+              );
+              break;
+            case 1:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const HistoryPage(currentIndex: 1),
+                ),
+              );
+              break;
+            case 2:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const WorkerProfilePage(currentIndex: 2),
+                ),
+              );
+              break;
+          }
+        },
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history_outlined),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
     );
