@@ -173,7 +173,10 @@ class _HomePageState extends State<HomePage> {
           );
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home, color: Colors.blue),
+            label: "Home",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
