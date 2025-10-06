@@ -11,7 +11,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Dummy job requests data
   List<Map<String, String>> jobRequests = [
     {
       "name": "Jhon Suuper",
@@ -42,7 +41,6 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-  // Dummy schedule data
   List<Map<String, String>> schedules = [
     {
       "name": "Jhon Suuper",
@@ -54,7 +52,7 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-  bool _showAllRequests = false; // toggle state
+  bool _showAllRequests = false;
 
   Future<void> _refreshData() async {
     await Future.delayed(const Duration(seconds: 2));
@@ -65,20 +63,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _removeJobRequest(int index) {
-    setState(() {
-      jobRequests.removeAt(index);
-    });
+    setState(() => jobRequests.removeAt(index));
   }
 
   @override
   Widget build(BuildContext context) {
-    // control how many requests to show
     final visibleRequests = _showAllRequests
         ? jobRequests
         : jobRequests.take(2).toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Home")),
+      appBar: AppBar(
+        title: const Text("Home"),
+        automaticallyImplyLeading: false,
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -86,7 +84,6 @@ class _HomePageState extends State<HomePage> {
             onRefresh: _refreshData,
             child: ListView(
               children: [
-                // Welcome Header
                 const Text(
                   "Welcome Back,\nService Provider",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -98,27 +95,9 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 20),
 
-                // Job Requests header with "View All"
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _sectionTitle(
-                      icon: Icons.work_outline,
-                      title: "New Job Request (${jobRequests.length})",
-                    ),
-                    if (jobRequests.length > 2)
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _showAllRequests = !_showAllRequests;
-                          });
-                        },
-                        child: Text(
-                          _showAllRequests ? "View Less" : "View All",
-                          style: const TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                  ],
+                _sectionTitle(
+                  icon: Icons.work_outline,
+                  title: "New Job Request (${jobRequests.length})",
                 ),
                 const SizedBox(height: 12),
 
@@ -137,11 +116,23 @@ class _HomePageState extends State<HomePage> {
                   );
                 }),
 
+                // View All / View Less
+                if (jobRequests.length > 2)
+                  Center(
+                    child: TextButton(
+                      onPressed: () =>
+                          setState(() => _showAllRequests = !_showAllRequests),
+                      child: Text(
+                        _showAllRequests ? "View Less" : "View All",
+                        style: const TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ),
                 const SizedBox(height: 20),
 
-                // Schedule
                 _sectionTitle(icon: Icons.schedule, title: "My Schedule"),
                 const SizedBox(height: 12),
+
                 ...schedules.map(
                   (s) => _ScheduleCard(
                     name: s["name"]!,
@@ -156,8 +147,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-
-      // BottomNavigationBar
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: widget.currentIndex,
         onTap: (index) {
@@ -184,22 +173,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Section Title Widget
-  Widget _sectionTitle({required IconData icon, required String title}) {
-    return Row(
-      children: [
-        Icon(icon, color: Colors.blue),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      ],
-    );
-  }
+  Widget _sectionTitle({required IconData icon, required String title}) => Row(
+    children: [
+      Icon(icon, color: Colors.blue),
+      const SizedBox(width: 8),
+      Text(
+        title,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    ],
+  );
 }
 
-// Job Request Card
 class _JobCard extends StatelessWidget {
   final String name, date, description, location, phone, price;
   final VoidCallback onDecline;
@@ -215,72 +200,60 @@ class _JobCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text(
-              date,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
-            ),
-            const SizedBox(height: 6),
-            Text(description, style: const TextStyle(fontSize: 13)),
-            const SizedBox(height: 8),
-            _infoRow(Icons.location_on, location),
-            _infoRow(Icons.phone, phone),
-            _infoRow(Icons.attach_money, price),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text("Accepted $name")));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                  ),
-                  child: const Text(
-                    "Accept",
-                    style: TextStyle(color: Colors.white),
-                  ),
+  Widget build(BuildContext context) => Card(
+    margin: const EdgeInsets.only(bottom: 16),
+    elevation: 2,
+    child: Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(date, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+          const SizedBox(height: 6),
+          Text(description, style: const TextStyle(fontSize: 13)),
+          const SizedBox(height: 8),
+          _infoRow(Icons.location_on, location),
+          _infoRow(Icons.phone, phone),
+          _infoRow(Icons.attach_money, price),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () => ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text("Accepted $name"))),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                child: const Text(
+                  "Accept",
+                  style: TextStyle(color: Colors.white),
                 ),
-                const SizedBox(width: 10),
-                OutlinedButton(
-                  onPressed: onDecline,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: const BorderSide(color: Colors.red),
-                  ),
-                  child: const Text("Decline"),
+              ),
+              const SizedBox(width: 10),
+              OutlinedButton(
+                onPressed: onDecline,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.red,
+                  side: const BorderSide(color: Colors.red),
                 ),
-              ],
-            ),
-          ],
-        ),
+                child: const Text("Decline"),
+              ),
+            ],
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 
-  static Widget _infoRow(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: Colors.grey),
-        const SizedBox(width: 4),
-        Expanded(child: Text(text, style: const TextStyle(fontSize: 12))),
-      ],
-    );
-  }
+  static Widget _infoRow(IconData icon, String text) => Row(
+    children: [
+      Icon(icon, size: 16, color: Colors.grey),
+      const SizedBox(width: 4),
+      Expanded(child: Text(text, style: const TextStyle(fontSize: 12))),
+    ],
+  );
 }
 
-// Schedule Card
 class _ScheduleCard extends StatelessWidget {
   final String name, date, description, location, phone;
   const _ScheduleCard({
@@ -292,38 +265,31 @@ class _ScheduleCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text(
-              date,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
-            ),
-            const SizedBox(height: 6),
-            Text(description, style: const TextStyle(fontSize: 13)),
-            const SizedBox(height: 8),
-            _infoRow(Icons.location_on, location),
-            _infoRow(Icons.phone, phone),
-          ],
-        ),
+  Widget build(BuildContext context) => Card(
+    margin: const EdgeInsets.only(bottom: 16),
+    elevation: 2,
+    child: Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(date, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+          const SizedBox(height: 6),
+          Text(description, style: const TextStyle(fontSize: 13)),
+          const SizedBox(height: 8),
+          _infoRow(Icons.location_on, location),
+          _infoRow(Icons.phone, phone),
+        ],
       ),
-    );
-  }
+    ),
+  );
 
-  static Widget _infoRow(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: Colors.grey),
-        const SizedBox(width: 4),
-        Expanded(child: Text(text, style: const TextStyle(fontSize: 12))),
-      ],
-    );
-  }
+  static Widget _infoRow(IconData icon, String text) => Row(
+    children: [
+      Icon(icon, size: 16, color: Colors.grey),
+      const SizedBox(width: 4),
+      Expanded(child: Text(text, style: const TextStyle(fontSize: 12))),
+    ],
+  );
 }
