@@ -137,6 +137,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Profile'),
         centerTitle: true,
         elevation: 0,
