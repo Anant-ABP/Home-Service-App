@@ -66,16 +66,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Password reset link sent! 📩"),
-                          backgroundColor: Colors.blue,
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: () {},
                   child: const Text("Submit"),
                 ),
               ],
