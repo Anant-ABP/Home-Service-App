@@ -139,7 +139,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Profile'),
-        centerTitle: true,
+        centerTitle: false,
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,

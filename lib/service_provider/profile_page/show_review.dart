@@ -132,7 +132,6 @@ class _ReviewPageState extends State<ReviewPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Stars + Title
                           Row(
                             children: [
                               Row(
@@ -185,7 +184,6 @@ class _ReviewPageState extends State<ReviewPage> {
                     ),
                   );
                 } else {
-                  // Load more button
                   if (filteredReviews.length > reviewsToShow) {
                     return Center(
                       child: OutlinedButton(
