@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:home_service_app/service_provider/login%20&%20sign%20up/forgotpass.dart';
 import 'package:home_service_app/service_provider/login%20&%20sign%20up/signup.dart';
-import 'package:home_service_app/service_provider/home_page/home.dart'; // ✅ import your real HomePage
+import 'package:home_service_app/service_provider/home_page/home.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -112,7 +113,14 @@ class _LoginPageState extends State<LoginPage> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ForgotPasswordPage(),
+                            ),
+                          );
+                        },
                         child: const Text(
                           "Forgot Password",
                           style: TextStyle(color: Colors.blue, fontSize: 14),
