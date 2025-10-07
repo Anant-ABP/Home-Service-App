@@ -73,9 +73,14 @@ class _HomePageState extends State<HomePage> {
         : jobRequests.take(2).toList();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Home"),
         automaticallyImplyLeading: false,
+        title: Center(child: const Text('Home')),
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        foregroundColor: Colors.black87,
       ),
       body: SafeArea(
         child: Padding(
@@ -119,15 +124,41 @@ class _HomePageState extends State<HomePage> {
                 // View All / View Less
                 if (jobRequests.length > 2)
                   Center(
-                    child: TextButton(
-                      onPressed: () =>
-                          setState(() => _showAllRequests = !_showAllRequests),
-                      child: Text(
-                        _showAllRequests ? "View Less" : "View All",
-                        style: const TextStyle(color: Colors.blue),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blueAccent.withOpacity(0.05),
+                        border: Border.all(color: Colors.blueAccent, width: 1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 2,
+                      ),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          minimumSize: Size.zero, // ✅ prevents oversized button
+                          tapTargetSize: MaterialTapTargetSize
+                              .shrinkWrap, // ✅ tighter tap area
+                        ),
+                        onPressed: () => setState(
+                          () => _showAllRequests = !_showAllRequests,
+                        ),
+                        child: Text(
+                          _showAllRequests ? "View Less" : "View All",
+                          style: const TextStyle(
+                            color: Colors.blueAccent,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                          ),
+                        ),
                       ),
                     ),
                   ),
+
                 const SizedBox(height: 20),
 
                 _sectionTitle(icon: Icons.schedule, title: "My Schedule"),
@@ -149,6 +180,8 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: widget.currentIndex,
+        selectedItemColor: Colors.blue, // ✅ selected icon & label color
+        unselectedItemColor: Colors.grey, // ✅ unselected color
         onTap: (index) {
           if (index == widget.currentIndex) return;
           final pages = [
@@ -162,10 +195,7 @@ class _HomePageState extends State<HomePage> {
           );
         },
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.blue),
-            label: "Home",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],

@@ -9,17 +9,14 @@ class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Row(
-          children: const [
-            Icon(Icons.history),
-            SizedBox(width: 8),
-            Text("History"),
-          ],
-        ),
-        centerTitle: true,
+        title: Center(child: const Text('History')),
+        centerTitle: false,
         elevation: 0,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        foregroundColor: Colors.black87,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -161,6 +158,8 @@ class HistoryPage extends StatelessWidget {
       // BottomNavigationBar
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
         onTap: (index) {
           if (index == currentIndex) return;
           switch (index) {
@@ -192,10 +191,7 @@ class HistoryPage extends StatelessWidget {
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history, color: Colors.blue),
-            label: "History",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),

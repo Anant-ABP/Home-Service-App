@@ -9,7 +9,6 @@ import 'edit_profile.dart';
 import 'manage_services.dart';
 import 'show_review.dart';
 
-/// ------------------- PROFILE PAGE -------------------
 class WorkerProfilePage extends StatefulWidget {
   final int currentIndex;
   const WorkerProfilePage({super.key, this.currentIndex = 2});
@@ -136,12 +135,13 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
     final s = _scale(context);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Profile'),
+        title: Center(child: const Text('Profile')),
         centerTitle: false,
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         foregroundColor: Colors.black87,
       ),
       body: SafeArea(
@@ -408,7 +408,6 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                   ],
                 ),
               ),
-
               SizedBox(height: 24 * s),
             ],
           ),
