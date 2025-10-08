@@ -3,14 +3,14 @@ import 'package:home_service_app/service_provider/login%20&%20sign%20up/forgotpa
 import 'package:home_service_app/service_provider/login%20&%20sign%20up/signup.dart';
 import 'package:home_service_app/service_provider/home_page/home.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class WorkerLoginPage extends StatefulWidget {
+  const WorkerLoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<WorkerLoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<WorkerLoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();

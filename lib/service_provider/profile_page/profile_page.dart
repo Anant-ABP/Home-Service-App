@@ -28,12 +28,18 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
     _loadServices();
     _loadAvailability();
     _loadProfile();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadServices();
+    });
   }
 
   Future<void> _loadServices() async {
     final prefs = await SharedPreferences.getInstance();
+    final savedServices = prefs.getStringList('selected_services') ?? [];
+
     setState(() {
-      _providerServices = prefs.getStringList('selected_services') ?? [];
+      _providerServices = savedServices;
     });
   }
 
@@ -331,6 +337,12 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                               selectedServices,
                             ),
                           );
+                          // ✅ Save immediately to SharedPreferences so it persists
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.setStringList(
+                            'selected_services',
+                            _providerServices,
+                          );
                         }
                       },
                     ),
@@ -393,7 +405,8 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                                   Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const LoginPage(),
+                                      builder: (context) =>
+                                          const WorkerLoginPage(),
                                     ),
                                     (route) => false,
                                   );

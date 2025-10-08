@@ -31,7 +31,8 @@ class _ManageServicesPageState extends State<ManageServicesPage> {
   // Load selected services from SharedPreferences
   Future<void> _loadSelectedServices() async {
     final prefs = await SharedPreferences.getInstance();
-    final savedServices = prefs.getStringList('selectedServices') ?? [];
+    final savedServices =
+        prefs.getStringList('selected_services') ?? []; // ✅ fixed key
     setState(() {
       for (var service in _services) {
         _serviceSelected[service] = savedServices.contains(service);
@@ -46,7 +47,10 @@ class _ManageServicesPageState extends State<ManageServicesPage> {
         .where((entry) => entry.value)
         .map((entry) => entry.key)
         .toList();
-    await prefs.setStringList('selectedServices', selectedServices);
+    await prefs.setStringList(
+      'selected_services',
+      selectedServices,
+    ); // ✅ fixed key
   }
 
   void _submitServices() async {

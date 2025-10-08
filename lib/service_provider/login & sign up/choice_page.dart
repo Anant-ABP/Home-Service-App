@@ -114,7 +114,7 @@ class ChoicePage extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/login');
+                            Navigator.pushNamed(context, '/worker-login');
                           },
                           child: const Text(
                             "Select",
