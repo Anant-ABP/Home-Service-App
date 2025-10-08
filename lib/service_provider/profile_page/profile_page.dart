@@ -156,7 +156,6 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Card
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12 * s),
@@ -260,8 +259,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
               ),
 
               SizedBox(height: 12 * s),
-
-              // Business Information Card
+              // here is worker business information
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12 * s),
@@ -298,7 +296,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
 
               SizedBox(height: 12 * s),
 
-              // Additional Details Card
+              // and here is Additional Details
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12 * s),
@@ -337,7 +335,6 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                               selectedServices,
                             ),
                           );
-                          // ✅ Save immediately to SharedPreferences so it persists
                           final prefs = await SharedPreferences.getInstance();
                           await prefs.setStringList(
                             'selected_services',
@@ -400,8 +397,6 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                               TextButton(
                                 onPressed: () {
                                   Navigator.pop(ctx);
-
-                                  // ✅ Navigate to SignUpPage and clear navigation history
                                   Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
@@ -426,8 +421,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
           ),
         ),
       ),
-
-      // BottomNavigationBar
+      // here is Bottom Nav Bar
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: widget.currentIndex,
         onTap: (index) {
