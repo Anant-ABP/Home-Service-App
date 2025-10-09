@@ -11,6 +11,7 @@ class UserProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: lightBackground,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("User Profile"),
         backgroundColor: primaryBlue,
         foregroundColor: Colors.white,

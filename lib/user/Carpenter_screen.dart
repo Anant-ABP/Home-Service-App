@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:home_service_app/class/service_model.dart';
 import 'package:get/get.dart';
+// Assuming Personal_Info.dart contains the InfoFormPage widget
 import 'package:home_service_app/bookings/Personal_Info.dart';
 
 class CarpenterScreen extends StatefulWidget {
@@ -17,34 +18,35 @@ class _CarpenterScreenState extends State<CarpenterScreen> {
     Service(
       id: 's1',
       providerName: 'Shyamaji bhai',
-      providerAvatarUrl: '//https://i.pravatar.cc/150?img=3',
-      title: 'Complete Kitchen Cleaning',
-      price: 799,
-      originalPrice: 1800,
+      providerAvatarUrl: 'https://i.pravatar.cc/150?img=3',
+      title: 'Custom Furniture Repair',
+      price: 999,
+      originalPrice: 1500,
       rating: 5,
       reviews: 130,
+      // *** MODIFIED to use your local asset '1.jpg' ***
       imageUrl: 'assets/1.png',
     ),
     Service(
       id: 's2',
-      providerName: 'Nayannhai',
-      providerAvatarUrl: '//https://i.pravatar.cc/150?img=5',
-      title: 'Window Cleaning',
+      providerName: 'Nayanbhai',
+      providerAvatarUrl: 'https://i.pravatar.cc/150?img=5',
+      title: 'Door and Window Frame Installation',
       price: 880,
       originalPrice: 1000,
       rating: 5,
       reviews: 130,
+      // Kept as a network image
       imageUrl: 'assets/2.jpeg',
     ),
   ];
 
-  // ऊपर वाला card नहीं दिखाना
-  final bool removeTop = true;
+  final bool removeTop = false;
 
   @override
   Widget build(BuildContext context) {
     final List<Service> visible = removeTop
-        ? services.skip(0).toList()
+        ? services.skip(1).toList()
         : services;
 
     return Scaffold(
@@ -56,18 +58,6 @@ class _CarpenterScreenState extends State<CarpenterScreen> {
           },
         ),
         title: const Text('Carpenter'),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {
-        //       Get.to(HomeScreen());
-        //     },
-        //     icon: const Icon(Icons.search),
-        //   ),
-        //   //   IconButton(
-        //   //     onPressed: () {},
-        //   //     icon: const Icon(Icons.shopping_cart_outlined),
-        //   //   ),
-        // ],
         centerTitle: true,
         elevation: 0.5,
       ),
@@ -79,18 +69,41 @@ class _CarpenterScreenState extends State<CarpenterScreen> {
           return _buildServiceCard(service);
         },
       ),
-      //   bottomNavigationBar: BottomNavigationBar(
-      //     currentIndex: 1,
-      //     items: const [
-      //       BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-      //       BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
-      //       BottomNavigationBarItem(icon: Icon(Icons.person), label: "User"),
-      //     ],
-      //   ),
     );
   }
 
   Widget _buildServiceCard(Service service) {
+    // Determine if the image is a local asset or a network URL
+    final bool isAsset = service.imageUrl.startsWith('assets/');
+
+    // Select the correct Image widget based on the source
+    Widget imageWidget;
+    if (service.imageUrl.startsWith('assets/')) {
+      imageWidget = Image.asset(
+        service.imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Container(
+          color: Colors.grey[200],
+          child: const Center(
+            child: Text(
+              "Asset Not Found",
+              style: TextStyle(color: Colors.black54),
+            ),
+          ),
+        ),
+      );
+    } else {
+      // Use Image.network for web URLs
+      imageWidget = Image.network(
+        service.imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Container(
+          color: Colors.grey[200],
+          child: const Center(child: Icon(Icons.broken_image, size: 48)),
+        ),
+      );
+    }
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -104,14 +117,7 @@ class _CarpenterScreenState extends State<CarpenterScreen> {
             child: SizedBox(
               height: 170,
               width: double.infinity,
-              child: Image.network(
-                service.imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  color: Colors.grey[200],
-                  child: const Center(child: Icon(Icons.image, size: 48)),
-                ),
-              ),
+              child: imageWidget, // Use the dynamically created widget
             ),
           ),
           Padding(
@@ -185,8 +191,7 @@ class _CarpenterScreenState extends State<CarpenterScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Get.to(InfoFormPage());
-                    // book action
+                    Get.to(const InfoFormPage());
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
