@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:home_service_app/bookings/Personal_Info.dart';
 
 class CarpenterScreen extends StatefulWidget {
-  CarpenterScreen({Key? key}) : super(key: key);
+  const CarpenterScreen({super.key});
 
   @override
   State<CarpenterScreen> createState() => _CarpenterScreenState();

@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:home_service_app/bookings/Personal_Info.dart';
 
 class ElectricianScreen extends StatefulWidget {
-  ElectricianScreen({Key? key}) : super(key: key);
+  const ElectricianScreen({super.key});
 
   @override
   State<ElectricianScreen> createState() => _ElectricianScreenState();

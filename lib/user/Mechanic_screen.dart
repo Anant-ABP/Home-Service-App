@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:home_service_app/bookings/Personal_Info.dart';
 
 class MechanicScreen extends StatefulWidget {
-  MechanicScreen({Key? key}) : super(key: key);
+  const MechanicScreen({super.key});
 
   @override
   State<MechanicScreen> createState() => _MechanicScreenState();

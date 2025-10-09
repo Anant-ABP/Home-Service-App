@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:home_service_app/bookings/Personal_Info.dart';
 
 class PlumberScreen extends StatefulWidget {
-  PlumberScreen({Key? key}) : super(key: key);
+  const PlumberScreen({super.key});
 
   @override
   State<PlumberScreen> createState() => _PlumberScreenState();

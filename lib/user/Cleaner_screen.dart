@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:home_service_app/bookings/Personal_Info.dart';
 
 class CleanerScreen extends StatefulWidget {
-  CleanerScreen({Key? key}) : super(key: key);
+  const CleanerScreen({super.key});
 
   @override
   State<CleanerScreen> createState() => _CleanerScreenState();

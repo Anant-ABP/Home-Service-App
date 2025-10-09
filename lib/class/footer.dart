@@ -22,7 +22,7 @@ class _HomeScreemState extends State<HomeScreem> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(children: widgetList, index: myindex),
+      body: IndexedStack(index: myindex, children: widgetList),
       appBar: AppBar(title: const Text('Home Screen')),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) {

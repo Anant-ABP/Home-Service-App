@@ -6,7 +6,7 @@ import 'package:home_service_app/bookings/Personal_Info.dart';
 //import 'package:homeservice/bookings/PersonalInfo_book.dart';
 
 class AcScreen extends StatefulWidget {
-  AcScreen({Key? key}) : super(key: key);
+  const AcScreen({super.key});
 
   @override
   State<AcScreen> createState() => _AcScreenState();

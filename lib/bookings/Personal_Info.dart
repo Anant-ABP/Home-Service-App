@@ -3,7 +3,7 @@ import 'package:home_service_app/bookings/Service_Info.dart';
 import 'package:get/get.dart';
 
 class InfoFormPage extends StatefulWidget {
-  const InfoFormPage({Key? key}) : super(key: key);
+  const InfoFormPage({super.key});
 
   @override
   State<InfoFormPage> createState() => _InfoFormPageState();
@@ -157,12 +157,12 @@ class SuccessPage extends StatelessWidget {
   final String address;
 
   const SuccessPage({
-    Key? key,
+    super.key,
     required this.firstName,
     required this.lastName,
     required this.mobile,
     required this.address,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
