@@ -54,7 +54,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         "phone": _phoneController.text,
         "location": _locationController.text,
         "gender": _gender,
-        "image": _profileImage,
+        "image": _profileImage?.path,
       });
     }
   }
@@ -178,7 +178,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: const Text(
-                  "Submit",
+                  "Save Changes",
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),

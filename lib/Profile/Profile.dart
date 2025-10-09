@@ -27,17 +27,17 @@ class UserProfilePage extends StatelessWidget {
                   radius: 50,
                   backgroundColor: primaryBlue,
                   child: Text(
-                    "N",
+                    "JAY",
                     style: TextStyle(fontSize: 40, color: Colors.white),
                   ),
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  "Name LastName",
+                  "Jay Surani",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const Text(
-                  "email@gmail.com",
+                  "jay180@gmail.com",
                   style: TextStyle(color: Colors.grey),
                 ),
               ],
@@ -64,8 +64,8 @@ class UserProfilePage extends StatelessWidget {
                     ),
                     const Divider(),
                     infoRow(Icons.phone, "Phone Number", "+91 123-234-2342"),
-                    infoRow(Icons.email, "Email", "email@gmail.com"),
-                    infoRow(Icons.home, "Address", "Gender provided"),
+                    infoRow(Icons.email, "Email", "jay180@gmail.com"),
+                    infoRow(Icons.home, "Address", "Rajkot, Gujarat"),
                     infoRow(Icons.male, "Gender", "Male"),
                     const SizedBox(height: 10),
                     ElevatedButton.icon(

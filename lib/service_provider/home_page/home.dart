@@ -68,151 +68,149 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final visibleRequests = _showAllRequests
-        ? jobRequests
-        : jobRequests.take(2).toList();
+    final visibleRequests =
+        _showAllRequests ? jobRequests : jobRequests.take(2).toList();
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Center(child: const Text('Home')),
-        centerTitle: false,
-        elevation: 0,
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        foregroundColor: Colors.black87,
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: RefreshIndicator(
-            onRefresh: _refreshData,
-            child: ListView(
-              children: [
-                const Text(
-                  "Welcome Back,\nService Provider",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 6),
-                const Text(
-                  "Manage your service request and grow your business",
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-                const SizedBox(height: 20),
+    // ✅ Prevent going back to ChoicePage using phone's back button
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Center(child: Text('Home')),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black87,
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: RefreshIndicator(
+              onRefresh: _refreshData,
+              child: ListView(
+                children: [
+                  const Text(
+                    "Welcome Back,\nService Provider",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    "Manage your service request and grow your business",
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 20),
 
-                _sectionTitle(
-                  icon: Icons.work_outline,
-                  title: "New Job Request (${jobRequests.length})",
-                ),
-                const SizedBox(height: 12),
+                  _sectionTitle(
+                    icon: Icons.work_outline,
+                    title: "New Job Request (${jobRequests.length})",
+                  ),
+                  const SizedBox(height: 12),
 
-                // Job Requests List
-                ...visibleRequests.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final job = entry.value;
-                  return _JobCard(
-                    name: job["name"]!,
-                    date: job["date"]!,
-                    description: job["description"]!,
-                    location: job["location"]!,
-                    phone: job["phone"]!,
-                    price: job["price"]!,
-                    onDecline: () => _removeJobRequest(index),
-                  );
-                }),
+                  ...visibleRequests.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final job = entry.value;
+                    return _JobCard(
+                      name: job["name"]!,
+                      date: job["date"]!,
+                      description: job["description"]!,
+                      location: job["location"]!,
+                      phone: job["phone"]!,
+                      price: job["price"]!,
+                      onDecline: () => _removeJobRequest(index),
+                    );
+                  }),
 
-                // View All / View Less
-                if (jobRequests.length > 2)
-                  Center(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent.withOpacity(0.05),
-                        border: Border.all(color: Colors.blueAccent, width: 1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 2,
-                      ),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
+                  if (jobRequests.length > 2)
+                    Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blueAccent.withOpacity(0.05),
+                          border: Border.all(color: Colors.blueAccent, width: 1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 2,
+                        ),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
-                          minimumSize: Size.zero, // ✅ prevents oversized button
-                          tapTargetSize: MaterialTapTargetSize
-                              .shrinkWrap, // ✅ tighter tap area
-                        ),
-                        onPressed: () => setState(
-                          () => _showAllRequests = !_showAllRequests,
-                        ),
-                        child: Text(
-                          _showAllRequests ? "View Less" : "View All",
-                          style: const TextStyle(
-                            color: Colors.blueAccent,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 13,
+                          onPressed: () =>
+                              setState(() => _showAllRequests = !_showAllRequests),
+                          child: Text(
+                            _showAllRequests ? "View Less" : "View All",
+                            style: const TextStyle(
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 13,
+                            ),
                           ),
                         ),
                       ),
                     ),
+
+                  const SizedBox(height: 20),
+
+                  _sectionTitle(icon: Icons.schedule, title: "My Schedule"),
+                  const SizedBox(height: 12),
+
+                  ...schedules.map(
+                    (s) => _ScheduleCard(
+                      name: s["name"]!,
+                      date: s["date"]!,
+                      description: s["description"]!,
+                      location: s["location"]!,
+                      phone: s["phone"]!,
+                    ),
                   ),
-
-                const SizedBox(height: 20),
-
-                _sectionTitle(icon: Icons.schedule, title: "My Schedule"),
-                const SizedBox(height: 12),
-
-                ...schedules.map(
-                  (s) => _ScheduleCard(
-                    name: s["name"]!,
-                    date: s["date"]!,
-                    description: s["description"]!,
-                    location: s["location"]!,
-                    phone: s["phone"]!,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: widget.currentIndex,
-        selectedItemColor: Colors.blue, // ✅ selected icon & label color
-        unselectedItemColor: Colors.grey, // ✅ unselected color
-        onTap: (index) {
-          if (index == widget.currentIndex) return;
-          final pages = [
-            const HomePage(currentIndex: 0),
-            const HistoryPage(currentIndex: 1),
-            const WorkerProfilePage(currentIndex: 2),
-          ];
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => pages[index]),
-          );
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-        ],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: widget.currentIndex,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          onTap: (index) {
+            if (index == widget.currentIndex) return;
+            final pages = [
+              const HomePage(currentIndex: 0),
+              const HistoryPage(currentIndex: 1),
+              const WorkerProfilePage(currentIndex: 2),
+            ];
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => pages[index]),
+            );
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          ],
+        ),
       ),
     );
   }
 
   Widget _sectionTitle({required IconData icon, required String title}) => Row(
-    children: [
-      Icon(icon, color: Colors.blue),
-      const SizedBox(width: 8),
-      Text(
-        title,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
-    ],
-  );
+        children: [
+          Icon(icon, color: Colors.blue),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ],
+      );
 }
 
 class _JobCard extends StatelessWidget {
@@ -231,57 +229,57 @@ class _JobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-    margin: const EdgeInsets.only(bottom: 16),
-    elevation: 2,
-    child: Padding(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text(date, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-          const SizedBox(height: 6),
-          Text(description, style: const TextStyle(fontSize: 13)),
-          const SizedBox(height: 8),
-          _infoRow(Icons.location_on, location),
-          _infoRow(Icons.phone, phone),
-          _infoRow(Icons.attach_money, price),
-          const SizedBox(height: 10),
-          Row(
+        margin: const EdgeInsets.only(bottom: 16),
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ElevatedButton(
-                onPressed: () => ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text("Accepted $name"))),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                child: const Text(
-                  "Accept",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              const SizedBox(width: 10),
-              OutlinedButton(
-                onPressed: onDecline,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  side: const BorderSide(color: Colors.red),
-                ),
-                child: const Text("Decline"),
+              Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(date, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+              const SizedBox(height: 6),
+              Text(description, style: const TextStyle(fontSize: 13)),
+              const SizedBox(height: 8),
+              _infoRow(Icons.location_on, location),
+              _infoRow(Icons.phone, phone),
+              _infoRow(Icons.attach_money, price),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () => ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text("Accepted $name"))),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                    child: const Text(
+                      "Accept",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  OutlinedButton(
+                    onPressed: onDecline,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.red,
+                      side: const BorderSide(color: Colors.red),
+                    ),
+                    child: const Text("Decline"),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 
   static Widget _infoRow(IconData icon, String text) => Row(
-    children: [
-      Icon(icon, size: 16, color: Colors.grey),
-      const SizedBox(width: 4),
-      Expanded(child: Text(text, style: const TextStyle(fontSize: 12))),
-    ],
-  );
+        children: [
+          Icon(icon, size: 16, color: Colors.grey),
+          const SizedBox(width: 4),
+          Expanded(child: Text(text, style: const TextStyle(fontSize: 12))),
+        ],
+      );
 }
 
 class _ScheduleCard extends StatelessWidget {
@@ -296,30 +294,30 @@ class _ScheduleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-    margin: const EdgeInsets.only(bottom: 16),
-    elevation: 2,
-    child: Padding(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text(date, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-          const SizedBox(height: 6),
-          Text(description, style: const TextStyle(fontSize: 13)),
-          const SizedBox(height: 8),
-          _infoRow(Icons.location_on, location),
-          _infoRow(Icons.phone, phone),
-        ],
-      ),
-    ),
-  );
+        margin: const EdgeInsets.only(bottom: 16),
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(date, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+              const SizedBox(height: 6),
+              Text(description, style: const TextStyle(fontSize: 13)),
+              const SizedBox(height: 8),
+              _infoRow(Icons.location_on, location),
+              _infoRow(Icons.phone, phone),
+            ],
+          ),
+        ),
+      );
 
   static Widget _infoRow(IconData icon, String text) => Row(
-    children: [
-      Icon(icon, size: 16, color: Colors.grey),
-      const SizedBox(width: 4),
-      Expanded(child: Text(text, style: const TextStyle(fontSize: 12))),
-    ],
-  );
+        children: [
+          Icon(icon, size: 16, color: Colors.grey),
+          const SizedBox(width: 4),
+          Expanded(child: Text(text, style: const TextStyle(fontSize: 12))),
+        ],
+      );
 }

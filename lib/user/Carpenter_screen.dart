@@ -23,7 +23,7 @@ class _CarpenterScreenState extends State<CarpenterScreen> {
       originalPrice: 1800,
       rating: 5,
       reviews: 130,
-      imageUrl: 'assets/carpenter3.jpg',
+      imageUrl: 'assets/1.png',
     ),
     Service(
       id: 's2',
@@ -34,8 +34,7 @@ class _CarpenterScreenState extends State<CarpenterScreen> {
       originalPrice: 1000,
       rating: 5,
       reviews: 130,
-      imageUrl:
-          'https://images.unsplash.com/photo-1581579186584-9e6b3f0f7c6f?auto=format&fit=crop&w=1200&q=60',
+      imageUrl: 'assets/2.jpeg',
     ),
   ];
 

@@ -356,6 +356,8 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                         _loadAvailability();
                       },
                     ),
+
+                    // Inside _actionTile for Edit Profile section:
                     _actionTile(
                       icon: Icons.edit,
                       title: 'Edit Profile',
@@ -363,12 +365,54 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
                         final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const EditProfilePage(),
+                            builder: (_) => EditProfilePage(
+                              name: _name,
+                              email: _email,
+                              phone: _phone,
+                              location: _location,
+                              gender: _gender,
+                              image: _imagePath != null
+                                  ? File(_imagePath!)
+                                  : null,
+                            ),
                           ),
                         );
-                        if (result == true) _loadProfile();
+
+                        if (result != null && result is Map) {
+                          final prefs = await SharedPreferences.getInstance();
+
+                          await prefs.setString(
+                            "worker_name",
+                            result["name"] ?? "",
+                          );
+                          await prefs.setString(
+                            "worker_email",
+                            result["email"] ?? "",
+                          );
+                          await prefs.setString(
+                            "worker_phone",
+                            result["phone"] ?? "",
+                          );
+                          await prefs.setString(
+                            "worker_location",
+                            result["location"] ?? "",
+                          );
+                          await prefs.setString(
+                            "worker_gender",
+                            result["gender"] ?? "",
+                          );
+                          if (result["image"] != null) {
+                            await prefs.setString(
+                              "worker_image",
+                              result["image"],
+                            );
+                          }
+
+                          _loadProfile(); // Refresh UI
+                        }
                       },
                     ),
+
                     ListTile(
                       leading: const Icon(
                         Icons.logout_outlined,
