@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:homeservice/bookings/Service_Info.dart';
 import 'package:get/get.dart';
+import 'package:home_service_app/user/bookings/Service_Info.dart';
 
 class InfoFormPage extends StatefulWidget {
   const InfoFormPage({Key? key}) : super(key: key);

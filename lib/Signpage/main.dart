@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'signup_page.dart';
 import 'forgot_password_page.dart';
-import 'splash_page.dart';   // make sure file name matches
-import 'choice_page.dart';  // make sure file name matches
+import 'splash_page.dart';  
+import 'choice_page.dart';  
 
 void main() {
   runApp(const MyApp());

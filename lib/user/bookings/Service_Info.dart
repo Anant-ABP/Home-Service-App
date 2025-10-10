@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Confirm.dart';
-import 'package:intl/intl.dart'; // Import for date formatting
+//import 'package:intl/intl.dart'; // Import for date formatting
 
 // You will need to add the intl package to your pubspec.yaml:
 // dependencies:
@@ -12,7 +12,7 @@ import 'package:intl/intl.dart'; // Import for date formatting
 // 1. BOOKING SCREEN
 // ---------------------------------------------------------------- //
 
-class ServiceInfo_Screen extends StatefulWidget {
+ class ServiceInfo_Screen extends StatefulWidget {
   const ServiceInfo_Screen({super.key});
 
   @override
@@ -53,7 +53,7 @@ class _ServiceInfo_ScreenState extends State<ServiceInfo_Screen> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _dateController.text = DateFormat('EEEE, MMM d, yyyy').format(picked);
+       // _dateController.text = DateFormat('EEEE, MMM d, yyyy').format(picked);
       });
     }
   }

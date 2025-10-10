@@ -1,9 +1,9 @@
 // lib/screens/cleaner_screen.dart
 import 'package:flutter/material.dart';
-import 'package:homeservice/class/service_model.dart';
-import 'package:homeservice/user/Home_screen.dart';
 import 'package:get/get.dart';
-import 'package:homeservice/bookings/Personal_Info.dart';
+import 'package:home_service_app/user/bookings/Personal_Info.dart';
+import 'package:home_service_app/user/class/service_model.dart';
+import 'package:home_service_app/user/user_screen/Home_screen.dart';
 
 class ElectricianScreen extends StatefulWidget {
   ElectricianScreen({Key? key}) : super(key: key);

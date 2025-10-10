@@ -1,13 +1,14 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:homeservice/user/Carpenter_screen.dart';
-import 'package:homeservice/user/Cleaner_screen.dart';
-import 'package:homeservice/user/Electrician_screen.dart';
-import 'package:homeservice/user/Mechanic_screen.dart';
-import 'package:homeservice/user/Ac_screen.dart';
-import 'package:homeservice/user/Plumber_screen.dart';
-import 'package:homeservice/user/Search_screen.dart';
+import 'package:home_service_app/user/user_screen/Ac_screen.dart';
+import 'package:home_service_app/user/user_screen/Carpenter_screen.dart';
+import 'package:home_service_app/user/user_screen/Cleaner_screen.dart';
+import 'package:home_service_app/user/user_screen/Electrician_screen.dart';
+import 'package:home_service_app/user/user_screen/Mechanic_screen.dart';
+import 'package:home_service_app/user/user_screen/Plumber_screen.dart';
+import 'package:home_service_app/user/user_screen/Search_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,10 +71,10 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.search),
             onPressed: () {
               // Search functionality
-              Get.to(SearchScreen());
+              Get.to(SearchScreen()); 
             },
           ),
-          // Cart button यहाँ से हटा दिया गया है
+        
         ],
       ),
       body: Padding(

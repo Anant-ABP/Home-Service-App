@@ -1,19 +1,18 @@
 // lib/screens/cleaner_screen.dart
 import 'package:flutter/material.dart';
-import 'package:homeservice/class/service_model.dart';
-import 'package:homeservice/user/Home_screen.dart';
+import 'package:home_service_app/user/bookings/Personal_Info.dart';
+import 'package:home_service_app/user/class/service_model.dart';
+import 'package:home_service_app/user/user_screen/Home_screen.dart';
 import 'package:get/get.dart';
-import 'package:homeservice/bookings/Personal_Info.dart';
-//import 'package:homeservice/bookings/PersonalInfo_book.dart';
 
-class AcScreen extends StatefulWidget {
-  AcScreen({Key? key}) : super(key: key);
+class CarpenterScreen extends StatefulWidget {
+  CarpenterScreen({Key? key}) : super(key: key);
 
   @override
-  State<AcScreen> createState() => _AcScreenState();
+  State<CarpenterScreen> createState() => _CarpenterScreenState();
 }
 
-class _AcScreenState extends State<AcScreen> {
+class _CarpenterScreenState extends State<CarpenterScreen> {
   // sample data
   final List<Service> services = [
     Service(
@@ -59,7 +58,7 @@ class _AcScreenState extends State<AcScreen> {
             Get.back();
           },
         ),
-        title: const Text('Ac repair'),
+        title: const Text('Carpenter'),
         actions: [
           IconButton(
             onPressed: () {

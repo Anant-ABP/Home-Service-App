@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_service_app/user/user_screen/Home_screen.dart';
 import 'signup_page.dart';
 import 'forgot_password_page.dart';
 
@@ -21,10 +22,31 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  void _login() {
+    if (_formKey.currentState!.validate()) {
+      // ✅ Show login success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Login Successful 🎉"),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // ✅ Navigate to HomeScreen after a short delay
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset :true,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -47,7 +69,8 @@ class _LoginPageState extends State<LoginPage> {
                     labelText: "Email",
                     prefixIcon: const Icon(Icons.email_outlined),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -69,7 +92,8 @@ class _LoginPageState extends State<LoginPage> {
                     labelText: "Password",
                     prefixIcon: const Icon(Icons.lock_outline),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -107,16 +131,8 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Login Successful 🎉"),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: _login,
+                  // onPressed: ,
                   child: const Text("Login"),
                 ),
 
