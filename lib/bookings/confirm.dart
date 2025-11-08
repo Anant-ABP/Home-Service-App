@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:get/get_core/get_core.dart';
 import 'package:get/get.dart';
 import 'package:home_service_app/user/Home_screen.dart';
-
-// ---------------------------------------------------------------- //
-// 2. CONFIRMATION SCREEN
-// ---------------------------------------------------------------- //
 
 class ConfirmationScreen extends StatelessWidget {
   const ConfirmationScreen({super.key});
@@ -14,25 +9,23 @@ class ConfirmationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Booking Confirmed'),
-        //automaticallyMute: false, // Hide back button for confirmation
+        centerTitle: true,
+        title: const Text("Booking Confirmed"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(32.0),
         child: Column(
-          // Puts content in the center vertically
           mainAxisAlignment: MainAxisAlignment.center,
-          // Stretches children horizontally
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             const Icon(
-              Icons.check_circle_outline,
+              Icons.check_circle,
               color: Colors.green,
               size: 100,
             ),
             const SizedBox(height: 20),
             const Text(
-              'Your booking is confirmed!',
+              "Your booking is confirmed!",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 24,
@@ -42,18 +35,15 @@ class ConfirmationScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             const Text(
-              'Thank you for booking with us. We look forward to seeing you.',
+              "Thank you for booking a service.\nThe worker will contact you shortly.",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, color: Colors.black54),
             ),
-            const SizedBox(height: 80),
+            const SizedBox(height: 60),
 
-            // Back to Home Button
             ElevatedButton(
               onPressed: () {
-                // Navigate back to the very first screen (BookingScreen in this case)
-                // This will clear the navigation stack up to the first route
-                Get.to(HomeScreen());
+                Get.offAll(() => HomeScreen()); // ✅ navigate user to home screen
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 15),
@@ -61,7 +51,10 @@ class ConfirmationScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text('Back to Home', style: TextStyle(fontSize: 18)),
+              child: const Text(
+                "Back to Home",
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ],
         ),

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,13 +48,29 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
 
   Future<void> _saveAvailability() async {
     final prefs = await SharedPreferences.getInstance();
+
+    Map<String, dynamic> firebaseAvailability = {};
+
     for (var day in _days) {
       await prefs.setBool('${day}_enabled', _dayEnabled[day]!);
       await prefs.setInt('${day}_startHour', _startTime[day]!.hour);
       await prefs.setInt('${day}_startMinute', _startTime[day]!.minute);
       await prefs.setInt('${day}_endHour', _endTime[day]!.hour);
       await prefs.setInt('${day}_endMinute', _endTime[day]!.minute);
+
+      if (_dayEnabled[day] == true) {
+        firebaseAvailability[day] = {
+          "start": _startTime[day]!.format(context),
+          "end": _endTime[day]!.format(context),
+        };
+      }
     }
+
+    // ✅ Save to workers collection
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    await FirebaseFirestore.instance.collection("workers").doc(uid).set({
+      "availability": firebaseAvailability,
+    }, SetOptions(merge: true));
   }
 
   Future<void> _pickTime(String day, bool isStart) async {

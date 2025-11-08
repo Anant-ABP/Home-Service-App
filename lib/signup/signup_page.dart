@@ -1,4 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'login_page.dart';
 
 class SignupPage extends StatefulWidget {
@@ -17,6 +22,8 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  bool _isLoading = false;
+
   @override
   void dispose() {
     _usernameController.dispose();
@@ -24,6 +31,78 @@ class _SignupPageState extends State<SignupPage> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  /// ✅ Firebase Signup + Firestore Save (Role = "user")
+  Future<void> _registerUser() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    FocusScope.of(context).unfocus();
+    setState(() => _isLoading = true);
+
+    try {
+      // 1) Create account
+      final cred = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      final uid = cred.user!.uid;
+
+      // 2) Write profile (with timeout so it can’t hang forever)
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .set({
+            'uid': uid,
+            'name': _usernameController.text.trim(),
+            'email': _emailController.text.trim(),
+            'role': 'user',
+            'createdAt': FieldValue.serverTimestamp(), // correct
+          })
+          .timeout(const Duration(seconds: 5));
+
+      if (!mounted) return;
+
+      // 3) Navigate after success
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+        (route) => false,
+      );
+    } on TimeoutException catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Thanks for singing up! Please login to continue.'),
+            backgroundColor: Color.fromARGB(255, 16, 89, 245),
+          ),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              e.code == 'email-already-in-use'
+                  ? 'Email already exists'
+                  : e.code == 'weak-password'
+                  ? 'Password too weak'
+                  : 'Signup failed: ${e.message ?? e.code}',
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      // Catch ANY other error (including Firestore errors)
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -34,7 +113,7 @@ class _SignupPageState extends State<SignupPage> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Form(
-            key: _formKey, // ✅ form key
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -55,12 +134,9 @@ class _SignupPageState extends State<SignupPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter a username";
-                    }
-                    return null;
-                  },
+                  validator: (value) => value == null || value.isEmpty
+                      ? "Please enter a username"
+                      : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -97,15 +173,9 @@ class _SignupPageState extends State<SignupPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter a password";
-                    }
-                    if (value.length < 6) {
-                      return "Password must be at least 6 characters";
-                    }
-                    return null;
-                  },
+                  validator: (value) => value == null || value.length < 6
+                      ? "Min 6 char password"
+                      : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -120,16 +190,13 @@ class _SignupPageState extends State<SignupPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  validator: (value) {
-                    if (value != _passwordController.text) {
-                      return "Passwords do not match";
-                    }
-                    return null;
-                  },
+                  validator: (value) => value != _passwordController.text
+                      ? "Passwords do not match"
+                      : null,
                 ),
                 const SizedBox(height: 30),
 
-                // Submit Button
+                // ✅ Signup Button with loader
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 48),
@@ -137,18 +204,13 @@ class _SignupPageState extends State<SignupPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // ✅ If validation passes
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Signup Successful! 🎉"),
-                          backgroundColor: Colors.green,
+                  onPressed: _isLoading ? null : _registerUser,
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          "Sign Up",
+                          style: TextStyle(color: Colors.white),
                         ),
-                      );
-                    }
-                  },
-                  child: const Text("Sign up"),
                 ),
 
                 const SizedBox(height: 20),
@@ -156,12 +218,10 @@ class _SignupPageState extends State<SignupPage> {
                 // Navigate to Login
                 Center(
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const LoginPage()),
-                      );
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LoginPage()),
+                    ),
                     child: const Text(
                       "Already have an Account? Login",
                       style: TextStyle(color: Colors.blue),

@@ -70,7 +70,7 @@ class ChoicePage extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/login');
+                            Navigator.pushNamed(context, '/signup');
                           },
                           child: const Text(
                             "Select",
@@ -114,7 +114,7 @@ class ChoicePage extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/worker-login');
+                            Navigator.pushNamed(context, '/signUp');
                           },
                           child: const Text(
                             "Select",

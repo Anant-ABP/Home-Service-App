@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:home_service_app/bookings/Service_Info.dart';
 import 'package:get/get.dart';
+import 'package:home_service_app/bookings/confirm.dart';
 
 class InfoFormPage extends StatefulWidget {
-  const InfoFormPage({super.key});
+  final String workerId; // worker selected by user
+
+  const InfoFormPage({super.key, required this.workerId});
 
   @override
   State<InfoFormPage> createState() => _InfoFormPageState();
@@ -16,6 +19,7 @@ class _InfoFormPageState extends State<InfoFormPage> {
   final _lastNameController = TextEditingController();
   final _mobileController = TextEditingController();
   final _addressController = TextEditingController();
+  final _descriptionController = TextEditingController(); // <-- NEW FIELD
 
   @override
   void dispose() {
@@ -23,107 +27,116 @@ class _InfoFormPageState extends State<InfoFormPage> {
     _lastNameController.dispose();
     _mobileController.dispose();
     _addressController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => SuccessPage(
-            firstName: _firstNameController.text,
-            lastName: _lastNameController.text,
-            mobile: _mobileController.text,
-            address: _addressController.text,
-          ),
-        ),
-      );
+      try {
+        await FirebaseFirestore.instance.collection("bookings").add({
+          "workerId": widget.workerId,
+          "firstName": _firstNameController.text.trim(),
+          "lastName": _lastNameController.text.trim(),
+          "mobile": _mobileController.text.trim(),
+          "address": _addressController.text.trim(),
+          "description": _descriptionController.text.trim(),
+          "timestamp": FieldValue.serverTimestamp(),
+        });
+
+        Get.offAll(
+          () => const ConfirmationScreen(),
+        ); // ✅ navigate to confirmation
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Failed to send request: $e")));
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    print("✅ INFO FORM OPENED FOR WORKER ID: ${widget.workerId}");
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Enter Your Information"),
         elevation: 0.5,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              // First Name
               TextFormField(
                 controller: _firstNameController,
-                decoration: const InputDecoration(
-                  labelText: "FirstName",
-                  hintText: "Name",
+                decoration: InputDecoration(
+                  labelText: "First Name",
                   prefixIcon: Icon(Icons.person_outline),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? "Please enter your first name"
-                    : null,
+                validator: (value) =>
+                    value!.isEmpty ? "Please enter your first name" : null,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
 
-              // Last Name
               TextFormField(
                 controller: _lastNameController,
-                decoration: const InputDecoration(
-                  labelText: "LastName",
-                  hintText: "LastName",
+                decoration: InputDecoration(
+                  labelText: "Last Name",
                   prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? "Please enter your last name"
-                    : null,
+                validator: (value) =>
+                    value!.isEmpty ? "Please enter your last name" : null,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
 
-              // Mobile Number
               TextFormField(
                 controller: _mobileController,
                 keyboardType: TextInputType.phone,
                 maxLength: 10,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Mobile Number",
-                  hintText: "Mobile Number",
                   prefixIcon: Icon(Icons.phone),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Please enter mobile number";
-                  } else if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
-                    return "Enter a valid 10-digit mobile number";
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    value!.length != 10 ? "Enter valid 10-digit mobile" : null,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
 
-              // Address
               TextFormField(
                 controller: _addressController,
                 maxLines: 2,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Address",
-                  hintText: "Address",
                   prefixIcon: Icon(Icons.location_on_outlined),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? "Please enter address"
-                    : null,
+                validator: (value) =>
+                    value!.isEmpty ? "Please enter your address" : null,
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: 16),
 
-              // Submit Button
+              // ✅ NEW Description Field
+              TextFormField(
+                controller: _descriptionController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: "Description (Explain your issue)",
+                  prefixIcon: Icon(Icons.description),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) =>
+                    value!.isEmpty ? "Please enter description" : null,
+              ),
+
+              SizedBox(height: 30),
+
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -135,68 +148,14 @@ class _InfoFormPageState extends State<InfoFormPage> {
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),
-                  child: const Text(
-                    "Submit",
+                  child: Text(
+                    "Submit Request",
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Next page after successful submit
-class SuccessPage extends StatelessWidget {
-  final String firstName;
-  final String lastName;
-  final String mobile;
-  final String address;
-
-  const SuccessPage({
-    super.key,
-    required this.firstName,
-    required this.lastName,
-    required this.mobile,
-    required this.address,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Submitted Info")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "First Name: $firstName",
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 8),
-            Text("Last Name: $lastName", style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 8),
-            Text("Mobile: $mobile", style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 8),
-            Text("Address: $address", style: const TextStyle(fontSize: 18)),
-            Text(
-              "\nThank you for submitting your information!",
-              style: TextStyle(fontSize: 16, color: Colors.green[700]),
-            ),
-
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Get.to(ServiceInfo_Screen());
-                },
-                child: const Text("Next"),
-              ),
-            ),
-          ],
         ),
       ),
     );

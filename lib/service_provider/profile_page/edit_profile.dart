@@ -1,10 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:home_service_app/service_provider/profile_page/new_photo/select_new_photo.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image/image.dart' as img;
+import 'dart:convert'; // for base64 encoding/decoding
+import 'new_photo/select_new_photo.dart';
 
 class EditProfilePage extends StatefulWidget {
   final String? name;
-  final String? email;
   final String? phone;
   final String? location;
   final String? gender;
@@ -13,7 +17,6 @@ class EditProfilePage extends StatefulWidget {
   const EditProfilePage({
     super.key,
     this.name,
-    this.email,
     this.phone,
     this.location,
     this.gender,
@@ -29,33 +32,135 @@ class _EditProfilePageState extends State<EditProfilePage> {
   File? _profileImage;
 
   late TextEditingController _nameController;
-  late TextEditingController _emailController;
   late TextEditingController _phoneController;
   late TextEditingController _locationController;
   String? _gender;
+
+  bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
 
     _nameController = TextEditingController(text: widget.name ?? "");
-    _emailController = TextEditingController(text: widget.email ?? "");
     _phoneController = TextEditingController(text: widget.phone ?? "");
     _locationController = TextEditingController(text: widget.location ?? "");
     _gender = widget.gender;
+
     _profileImage = widget.image;
   }
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pop(context, {
-        "name": _nameController.text,
-        "email": _emailController.text,
-        "phone": _phoneController.text,
-        "location": _locationController.text,
+  Future<String?> _uploadImageToFirebase(File imageFile) async {
+    try {
+      print("📸 Compressing image...");
+
+      // Read and decode the image
+      final originalBytes = await imageFile.readAsBytes();
+      final originalImage = img.decodeImage(originalBytes);
+
+      if (originalImage == null) {
+        print("❌ Failed to decode image");
+        return null;
+      }
+
+      // Resize image to max 300x300 pixels to reduce size
+      final resizedImage = img.copyResize(
+        originalImage,
+        width: 300,
+        height: 300,
+      );
+
+      // Encode as JPEG with 70% quality
+      final compressedBytes = img.encodeJpg(resizedImage, quality: 70);
+
+      // Convert to base64
+      final base64String = base64Encode(compressedBytes);
+
+      print("📊 Original size: ${originalBytes.length} bytes");
+      print("📊 Compressed size: ${compressedBytes.length} bytes");
+      print("📊 Base64 size: ${base64String.length} bytes");
+
+      if (base64String.length > 1000000) {
+        // 1MB limit
+        print("❌ Image still too large after compression");
+        return null;
+      }
+
+      return "data:image/jpeg;base64,$base64String";
+    } catch (e) {
+      print("🔥 Image processing error: $e");
+      return null;
+    }
+  }
+
+  Future<void> _saveProfile() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isSaving = true);
+
+    print("🔄 Starting profile save process...");
+
+    try {
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      String? imageUrl;
+
+      print("👤 User UID: $uid");
+      print("📸 Selected image: $_profileImage");
+
+      // Get current data first
+      final existingData = await FirebaseFirestore.instance
+          .collection("workers")
+          .doc(uid)
+          .get();
+
+      String? currentImageUrl = existingData.data()?["profileImage"];
+      print("🖼️ Current image URL in DB: $currentImageUrl");
+
+      // Upload new image if selected
+      if (_profileImage != null) {
+        print("⬆️ Starting image upload...");
+        imageUrl = await _uploadImageToFirebase(_profileImage!);
+        print("✅ Image upload completed: $imageUrl");
+      } else {
+        // Keep existing image
+        imageUrl = currentImageUrl;
+        print("🔄 No new image selected, keeping existing: $imageUrl");
+      }
+
+      // Prepare update data
+      final updateData = {
+        "name": _nameController.text.trim(),
+        "phone": _phoneController.text.trim(),
+        "location": _locationController.text.trim(),
         "gender": _gender,
-        "image": _profileImage?.path,
-      });
+        "profileImage": imageUrl,
+        "updatedAt": FieldValue.serverTimestamp(),
+      };
+
+      print("📝 Data to be saved: $updateData");
+
+      // Update Firestore
+      await FirebaseFirestore.instance
+          .collection("workers")
+          .doc(uid)
+          .set(updateData, SetOptions(merge: true));
+
+      print("🎉 Profile saved successfully!");
+
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print("❌ Error saving profile: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Error: ${e.toString()}")));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
     }
   }
 
@@ -66,9 +171,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
 
     if (selectedImage != null) {
-      setState(() {
-        _profileImage = selectedImage;
-      });
+      setState(() => _profileImage = selectedImage);
     }
   }
 
@@ -78,7 +181,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       appBar: AppBar(
         title: const Text("Edit Profile"),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        foregroundColor: Colors.black87,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -109,78 +212,53 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               const SizedBox(height: 20),
 
-              // Name
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: "Name"),
+                decoration: const InputDecoration(labelText: "Full Name"),
                 validator: (value) =>
                     value!.isEmpty ? "Please enter your name" : null,
               ),
 
-              // Email
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: "Email"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Please enter your email";
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return "Enter a valid email";
-                  }
-                  return null;
-                },
-              ),
+              const SizedBox(height: 10),
 
-              // Phone
               TextFormField(
                 controller: _phoneController,
                 decoration: const InputDecoration(labelText: "Phone Number"),
                 keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Please enter your phone number";
-                  }
-                  if (value.length < 10) {
-                    return "Phone number must be at least 10 digits";
-                  }
-                  return null;
-                },
               ),
 
-              // Location
+              const SizedBox(height: 10),
+
               TextFormField(
                 controller: _locationController,
                 decoration: const InputDecoration(labelText: "Location"),
-                validator: (value) =>
-                    value!.isEmpty ? "Please enter your location" : null,
               ),
 
-              // Gender
+              const SizedBox(height: 10),
+
               DropdownButtonFormField<String>(
                 value: _gender,
+                decoration: const InputDecoration(labelText: "Gender"),
                 items: ["Male", "Female", "Other"]
                     .map((g) => DropdownMenuItem(value: g, child: Text(g)))
                     .toList(),
                 onChanged: (val) => setState(() => _gender = val),
-                decoration: const InputDecoration(labelText: "Gender"),
-                validator: (value) =>
-                    value == null ? "Please select gender" : null,
               ),
 
               const SizedBox(height: 30),
 
-              // Submit button
               ElevatedButton(
-                onPressed: _submitForm,
+                onPressed: _isSaving ? null : _saveProfile,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueAccent,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                child: const Text(
-                  "Save Changes",
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
+                child: _isSaving
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        "Save Changes",
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
               ),
             ],
           ),

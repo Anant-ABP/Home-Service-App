@@ -1,214 +1,246 @@
-// lib/screens/cleaner_screen.dart
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:home_service_app/class/service_model.dart';
 import 'package:get/get.dart';
-// Assuming Personal_Info.dart contains the InfoFormPage widget
 import 'package:home_service_app/bookings/Personal_Info.dart';
 
-class CarpenterScreen extends StatefulWidget {
+class CarpenterScreen extends StatelessWidget {
   const CarpenterScreen({super.key});
 
   @override
-  State<CarpenterScreen> createState() => _CarpenterScreenState();
-}
-
-class _CarpenterScreenState extends State<CarpenterScreen> {
-  // sample data
-  final List<Service> services = [
-    Service(
-      id: 's1',
-      providerName: 'Shyamaji bhai',
-      providerAvatarUrl: 'https://i.pravatar.cc/150?img=3',
-      title: 'Custom Furniture Repair',
-      price: 999,
-      originalPrice: 1500,
-      rating: 5,
-      reviews: 130,
-      // *** MODIFIED to use your local asset '1.jpg' ***
-      imageUrl: 'assets/1.png',
-    ),
-    Service(
-      id: 's2',
-      providerName: 'Nayanbhai',
-      providerAvatarUrl: 'https://i.pravatar.cc/150?img=5',
-      title: 'Door and Window Frame Installation',
-      price: 880,
-      originalPrice: 1000,
-      rating: 5,
-      reviews: 130,
-      // Kept as a network image
-      imageUrl: 'assets/2.jpeg',
-    ),
-  ];
-
-  final bool removeTop = false;
-
-  @override
   Widget build(BuildContext context) {
-    final List<Service> visible = removeTop
-        ? services.skip(1).toList()
-        : services;
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Get.back();
-          },
+          onPressed: () => Get.back(),
         ),
         title: const Text('Carpenter'),
         centerTitle: true,
         elevation: 0.5,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.only(bottom: 16, top: 8),
-        itemCount: visible.length,
-        itemBuilder: (context, index) {
-          final service = visible[index];
-          return _buildServiceCard(service);
+      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance
+            .collection("workers")
+            .where("providerServices", arrayContains: "Carpentry")
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                "Error: ${snapshot.error}",
+                style: const TextStyle(color: Colors.red),
+              ),
+            );
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text(
+                "No carpenters available right now",
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+            );
+          }
+
+          final workers = snapshot.data!.docs;
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: workers.length,
+            itemBuilder: (context, index) {
+              final data = workers[index].data();
+              final name = (data["name"] ?? "Service Provider") as String;
+              final avatarUrl = (data["profileImage"] ?? "") as String?;
+              final ratingRaw = data["rating"];
+              final reviewsRaw = data["reviews"];
+
+              final rating = ratingRaw is num
+                  ? ratingRaw.toDouble()
+                  : double.tryParse(ratingRaw?.toString() ?? "0") ?? 0.0;
+
+              final reviews = reviewsRaw is num
+                  ? reviewsRaw.toInt()
+                  : int.tryParse(reviewsRaw?.toString() ?? "0") ?? 0;
+
+              return WorkerCompactCard(
+                name: name,
+                title: "Carpentry",
+                avatarUrl: avatarUrl,
+                rating: rating,
+                reviewCount: reviews,
+                onBook: () =>
+                    Get.to(() => InfoFormPage(workerId: workers[index].id)),
+              );
+            },
+          );
         },
       ),
     );
   }
+}
 
-  Widget _buildServiceCard(Service service) {
-    // Determine if the image is a local asset or a network URL
-    final bool isAsset = service.imageUrl.startsWith('assets/');
+ImageProvider _getProfileImage(String? imageUrl) {
+  if (imageUrl == null || imageUrl.isEmpty) {
+    return const AssetImage("assets/default_avatar.png");
+  }
 
-    // Select the correct Image widget based on the source
-    Widget imageWidget;
-    if (service.imageUrl.startsWith('assets/')) {
-      imageWidget = Image.asset(
-        service.imageUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Container(
-          color: Colors.grey[200],
-          child: const Center(
-            child: Text(
-              "Asset Not Found",
-              style: TextStyle(color: Colors.black54),
-            ),
-          ),
-        ),
-      );
-    } else {
-      // Use Image.network for web URLs
-      imageWidget = Image.network(
-        service.imageUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Container(
-          color: Colors.grey[200],
-          child: const Center(child: Icon(Icons.broken_image, size: 48)),
-        ),
-      );
+  if (imageUrl.startsWith('http')) {
+    return NetworkImage(imageUrl);
+  }
+
+  if (imageUrl.startsWith('data:image')) {
+    try {
+      final bytes = base64Decode(imageUrl.split(',').last);
+      return MemoryImage(bytes);
+    } catch (e) {
+      print('Error decoding base64 image: $e');
+      return const AssetImage("assets/default_avatar.png");
     }
+  }
 
+  return const AssetImage("assets/default_avatar.png");
+}
+
+/// Compact worker card used across categories
+class WorkerCompactCard extends StatelessWidget {
+  final String name;
+  final String title;
+  final String? avatarUrl;
+  final double rating;
+  final int reviewCount;
+  final VoidCallback onBook;
+
+  const WorkerCompactCard({
+    super.key,
+    required this.name,
+    required this.title,
+    required this.avatarUrl,
+    required this.rating,
+    required this.reviewCount,
+    required this.onBook,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // top image
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: SizedBox(
-              height: 170,
-              width: double.infinity,
-              child: imageWidget, // Use the dynamically created widget
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header row: avatar + name + Book
+            Row(
               children: [
-                // avatar
                 CircleAvatar(
-                  radius: 24,
-                  backgroundImage: NetworkImage(service.providerAvatarUrl),
-                  backgroundColor: Colors.grey[200],
+                  radius: 22,
+                  backgroundImage: _getProfileImage(avatarUrl),
+                  backgroundColor: Colors.blue.shade300,
+                  child: (avatarUrl == null || avatarUrl!.isEmpty)
+                      ? Text(
+                          name.isNotEmpty ? name[0].toUpperCase() : "W",
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      : null,
                 ),
-                const SizedBox(width: 10),
-                // details
+                const SizedBox(width: 12),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        service.providerName,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        service.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Text(
-                            "Rs. ${service.price.toStringAsFixed(0)}",
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "Rs. ${service.originalPrice.toStringAsFixed(0)}",
-                            style: const TextStyle(
-                              decoration: TextDecoration.lineThrough,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Row(
-                            children: List.generate(5, (i) {
-                              return Icon(
-                                i < service.rating.round()
-                                    ? Icons.star
-                                    : Icons.star_border,
-                                size: 16,
-                              );
-                            }),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "(${service.reviews} Reviews)",
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ],
+                  child: Text(
+                    name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    Get.to(const InfoFormPage());
-                  },
+                  onPressed: onBook,
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black87,
+                    elevation: 0,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
+                      horizontal: 16,
                       vertical: 10,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(color: Colors.black12.withOpacity(0.15)),
                     ),
                   ),
                   child: const Text("Book"),
                 ),
               ],
             ),
-          ),
-        ],
+
+            const SizedBox(height: 10),
+
+            // Service title (category)
+            Text(
+              title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.2,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            // Rating row
+            Row(
+              children: [
+                _Stars(rating: rating),
+                const SizedBox(width: 10),
+                Text(
+                  "($reviewCount Reviews)",
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _Stars extends StatelessWidget {
+  final double rating;
+  const _Stars({required this.rating});
+
+  @override
+  Widget build(BuildContext context) {
+    final safe = rating.isNaN ? 0.0 : rating;
+    final full = safe.clamp(0, 5).floor();
+    final half = (safe - full) >= 0.5;
+    final empty = 5 - full - (half ? 1 : 0);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (int i = 0; i < full; i++)
+          const Icon(Icons.star, size: 18, color: Colors.black87),
+        if (half) const Icon(Icons.star_half, size: 18, color: Colors.black87),
+        for (int i = 0; i < empty; i++)
+          const Icon(Icons.star_border, size: 18, color: Colors.black54),
+      ],
     );
   }
 }
