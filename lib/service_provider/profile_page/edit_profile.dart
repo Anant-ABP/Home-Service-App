@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image/image.dart' as img;
 import 'dart:convert'; // for base64 encoding/decoding
 import 'new_photo/select_new_photo.dart';

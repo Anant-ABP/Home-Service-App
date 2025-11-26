@@ -60,10 +60,10 @@ class ElectricianScreen extends StatelessWidget {
 
               return WorkerCompactCard(
                 name: w["name"] ?? "Service Provider",
-                title: "Electrical Service", // static since price removed
+                title: "Electrical Service",
                 avatarUrl: w["profileImage"],
-                rating: (w["rating"] ?? 0).toDouble(),
-                reviewCount: w["reviews"] ?? 0,
+                location: w["location"] ?? "Location not available",
+                phone: w["phone"] ?? "Phone not available",
                 onBook: () =>
                     Get.to(() => InfoFormPage(workerId: workers[index].id)),
               );
@@ -97,14 +97,13 @@ ImageProvider _getProfileImage(String? imageUrl) {
   return const AssetImage("assets/default_avatar.png");
 }
 
-/// Reusable compact worker card (no banner image) with:
-/// avatar • name • service title • price+mrp • stars+reviews • Book button
+/// Reusable compact worker card with location and phone
 class WorkerCompactCard extends StatelessWidget {
   final String name;
   final String title;
   final String? avatarUrl;
-  final double rating;
-  final int reviewCount;
+  final String location;
+  final String phone;
   final VoidCallback onBook;
 
   const WorkerCompactCard({
@@ -112,8 +111,8 @@ class WorkerCompactCard extends StatelessWidget {
     required this.name,
     required this.title,
     required this.avatarUrl,
-    required this.rating,
-    required this.reviewCount,
+    required this.location,
+    required this.phone,
     required this.onBook,
   });
 
@@ -147,7 +146,6 @@ class WorkerCompactCard extends StatelessWidget {
                       : null,
                 ),
 
-                // Add this helper method
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -197,17 +195,10 @@ class WorkerCompactCard extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            // Rating Row: stars + (xxx Reviews)
-            Row(
-              children: [
-                _Stars(rating: rating),
-                const SizedBox(width: 10),
-                Text(
-                  "($reviewCount Reviews)",
-                  style: const TextStyle(color: Colors.grey),
-                ),
-              ],
-            ),
+            // location and phone info
+            _InfoRow(icon: Icons.location_on_outlined, text: location),
+            const SizedBox(height: 4),
+            _InfoRow(icon: Icons.phone, text: phone),
           ],
         ),
       ),
@@ -215,24 +206,27 @@ class WorkerCompactCard extends StatelessWidget {
   }
 }
 
-class _Stars extends StatelessWidget {
-  final double rating;
-  const _Stars({required this.rating});
+// Helper widget for location and phone rows
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _InfoRow({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
-    final full = rating.clamp(0, 5).floor();
-    final half = (rating - full) >= 0.5;
-    final empty = 5 - full - (half ? 1 : 0);
-
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        for (int i = 0; i < full; i++)
-          const Icon(Icons.star, size: 18, color: Colors.black87),
-        if (half) const Icon(Icons.star_half, size: 18, color: Colors.black87),
-        for (int i = 0; i < empty; i++)
-          const Icon(Icons.star_border, size: 18, color: Colors.black54),
+        Icon(icon, size: 16, color: Colors.grey[600]),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
       ],
     );
   }

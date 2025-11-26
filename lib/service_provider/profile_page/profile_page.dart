@@ -11,7 +11,6 @@ import '../History/history.dart';
 import 'edit_profile.dart';
 import 'manage_services.dart';
 import 'availability.dart';
-import 'show_review.dart';
 import '../../../signup/login_page.dart';
 
 class WorkerProfilePage extends StatefulWidget {
@@ -33,7 +32,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
   Map<String, Map<String, String>> _availabilitySummary = {};
 
   String? _name, _email, _phone, _location, _gender, _imagePath;
-  double _avgRating = 0.0;
+  final double _avgRating = 0.0;
 
   @override
   void initState() {

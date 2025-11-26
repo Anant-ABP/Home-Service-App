@@ -144,7 +144,6 @@ class CategoriesScreen extends StatelessWidget {
                   category["title"],
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                subtitle: Text(category["services"]),
               ),
             ),
           );

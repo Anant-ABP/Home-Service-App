@@ -10,7 +10,7 @@ class AcScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // We’ll match a few common labels so minor naming differences still work.
+    // We'll match a few common labels so minor naming differences still work.
     const acLabels = [
       "AC",
       "Ac repair",
@@ -68,17 +68,16 @@ class AcScreen extends StatelessWidget {
 
               final name = (data["name"] ?? "Service Provider") as String;
               final avatarUrl = (data["profileImage"] ?? "") as String?;
-              final rating = (data["rating"] ?? 0).toDouble();
-              final reviews = (data["reviews"] ?? 0) is int
-                  ? data["reviews"] as int
-                  : int.tryParse("${data["reviews"]}") ?? 0;
+              final location =
+                  (data["location"] ?? "Location not available") as String;
+              final phone = (data["phone"] ?? "Phone not available") as String;
 
               return WorkerCompactCard(
                 name: name,
                 title: "AC Service",
                 avatarUrl: avatarUrl,
-                rating: rating,
-                reviewCount: reviews,
+                location: location,
+                phone: phone,
                 onBook: () =>
                     Get.to(() => InfoFormPage(workerId: workers[index].id)),
               );
@@ -112,13 +111,13 @@ ImageProvider _getProfileImage(String? imageUrl) {
   return const AssetImage("assets/default_avatar.png");
 }
 
-/// Compact, reusable worker card (no big banner image, no price)
+/// Compact, reusable worker card with location and phone
 class WorkerCompactCard extends StatelessWidget {
   final String name;
   final String title;
   final String? avatarUrl;
-  final double rating;
-  final int reviewCount;
+  final String location;
+  final String phone;
   final VoidCallback onBook;
 
   const WorkerCompactCard({
@@ -126,8 +125,8 @@ class WorkerCompactCard extends StatelessWidget {
     required this.name,
     required this.title,
     required this.avatarUrl,
-    required this.rating,
-    required this.reviewCount,
+    required this.location,
+    required this.phone,
     required this.onBook,
   });
 
@@ -208,17 +207,10 @@ class WorkerCompactCard extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            // rating row
-            Row(
-              children: [
-                _Stars(rating: rating),
-                const SizedBox(width: 10),
-                Text(
-                  "($reviewCount Reviews)",
-                  style: const TextStyle(color: Colors.grey),
-                ),
-              ],
-            ),
+            // location and phone info
+            _InfoRow(icon: Icons.location_on_outlined, text: location),
+            const SizedBox(height: 4),
+            _InfoRow(icon: Icons.phone, text: phone),
           ],
         ),
       ),
@@ -226,25 +218,27 @@ class WorkerCompactCard extends StatelessWidget {
   }
 }
 
-class _Stars extends StatelessWidget {
-  final double rating;
-  const _Stars({required this.rating});
+// Helper widget for location and phone rows
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _InfoRow({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
-    final safe = rating.isNaN ? 0.0 : rating;
-    final full = safe.clamp(0, 5).floor();
-    final half = (safe - full) >= 0.5;
-    final empty = 5 - full - (half ? 1 : 0);
-
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        for (int i = 0; i < full; i++)
-          const Icon(Icons.star, size: 18, color: Colors.black87),
-        if (half) const Icon(Icons.star_half, size: 18, color: Colors.black87),
-        for (int i = 0; i < empty; i++)
-          const Icon(Icons.star_border, size: 18, color: Colors.black54),
+        Icon(icon, size: 16, color: Colors.grey[600]),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
       ],
     );
   }
